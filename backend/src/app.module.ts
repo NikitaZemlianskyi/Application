@@ -3,6 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { User } from './users/user.entity';
+import { Event } from './events/event.entity';
+import { SeedService } from './database/seed.service';
 
 @Module({
   imports: [
@@ -20,12 +24,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get<string>('DB_USER', 'admin'),
         password: configService.get<string>('DB_PASSWORD', 'secret_pass'),
         database: configService.get<string>('DB_NAME', 'event_db'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        entities: [User, Event],
         synchronize: true,
       }),
     }),
+    TypeOrmModule.forFeature([User, Event]),
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SeedService],
 })
 export class AppModule {}
