@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
 import { Event } from './events/event.entity';
 import { SeedService } from './database/seed.service';
+import { EventsModule } from './events/events.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { SeedService } from './database/seed.service';
     }),
     TypeOrmModule.forFeature([User, Event]),
     AuthModule,
+    EventsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],
