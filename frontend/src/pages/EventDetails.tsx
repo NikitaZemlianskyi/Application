@@ -4,6 +4,9 @@ import { api } from "../api/axios";
 import { useAuthStore } from "../store/useAuthStore";
 import { format } from "date-fns";
 import { MapPin, Users, CalendarDays, Trash2, Edit } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import { ConfirmModal } from "../components/ui/ConfirmModal";
+import { useEventActions } from "../hooks/useEventActions";
 
 export const EventDetails = () => {
   const { id } = useParams();
@@ -26,6 +29,8 @@ export const EventDetails = () => {
     fetchEvent();
   }, [id]);
 
+  const { joinEvent, leaveEvent, deleteEvent, loading: actionLoading } = useEventActions(fetchEvent);
+
   if (!event) return <div className="text-center mt-20">Loading...</div>;
 
   const isOrganizer = user?.id === event.organizer.id;
@@ -34,25 +39,16 @@ export const EventDetails = () => {
   const isFull = event.capacity && event.participants.length >= event.capacity;
 
   const handleJoinLeave = async () => {
-    try {
-      if (isParticipant) {
-        await api.post(`/events/${id}/leave`);
-      } else {
-        await api.post(`/events/${id}/join`);
-      }
-      fetchEvent();
-    } catch (error) {
-      alert("Action failed");
+    if (isParticipant) {
+      await leaveEvent(id as string);
+    } else {
+      await joinEvent(id as string);
     }
   };
 
   const handleDelete = async () => {
-    try {
-      await api.delete(`/events/${id}`);
-      navigate("/");
-    } catch (error) {
-      alert("Failed to delete");
-    }
+    await deleteEvent(id as string);
+    navigate("/");
   };
 
   return (
@@ -63,15 +59,20 @@ export const EventDetails = () => {
             <h1 className="text-3xl font-bold text-gray-900">{event.title}</h1>
             {isOrganizer && (
               <div className="flex gap-2">
-                <button className="p-2 text-gray-500 hover:text-indigo-600 bg-gray-50 rounded-md">
+                <Button 
+                  onClick={() => navigate(`/events/${event.id}/edit`)}
+                  variant="secondary"
+                  className="p-2 !text-gray-500 hover:!text-indigo-600"
+                >
                   <Edit className="w-5 h-5" />
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setShowDeleteModal(true)}
-                  className="p-2 text-gray-500 hover:text-red-600 bg-gray-50 rounded-md"
+                  variant="secondary"
+                  className="p-2 !text-gray-500 hover:!text-red-600"
                 >
                   <Trash2 className="w-5 h-5" />
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -104,17 +105,20 @@ export const EventDetails = () => {
       <div className="space-y-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border">
           {user && !isOrganizer && (
-            <button
+            <Button
               onClick={handleJoinLeave}
-              disabled={isFull && !isParticipant}
-              className={`w-full py-3 rounded-md font-medium text-lg mb-6 transition ${isParticipant ? "bg-red-50 text-red-600 hover:bg-red-100" : isFull ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-green-600 text-white hover:bg-green-700"}`}
+              disabled={isFull && !isParticipant || actionLoading}
+              variant={isParticipant ? "danger-light" : isFull ? "secondary" : "success"}
+              fullWidth
+              size="lg"
+              className="mb-6 font-medium shadow-none"
             >
               {isParticipant
                 ? "Leave Event"
                 : isFull
                   ? "Event Full"
-                  : "Join Event"}{" "}
-            </button>
+                  : "Join Event"}
+            </Button>
           )}
 
           <h3 className="font-semibold text-lg mb-4 border-b pb-2">
@@ -136,30 +140,15 @@ export const EventDetails = () => {
         </div>
       </div>
 
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full">
-            <h3 className="text-lg font-bold mb-2">Delete Event</h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this event?
-            </p>
-            <div className="flex gap-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="flex-1 py-2 border rounded-md hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="flex-1 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete Event"
+        message="Are you sure you want to delete this event?"
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteModal(false)}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 };

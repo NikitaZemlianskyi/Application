@@ -17,6 +17,7 @@ import {
 } from "date-fns";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Button } from "../components/ui/Button";
 
 export const MyEvents = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -191,44 +192,40 @@ export const MyEvents = () => {
       {/* Controls section */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
-          <button
+          <Button
             onClick={handlePrevious}
-            className="p-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-lg shadow-sm"
+            variant="outline"
+            className="p-1.5"
           >
             <ChevronLeft size={18} />
-          </button>
+          </Button>
           <h2 className="text-xl font-bold text-gray-900 min-w-[150px] text-center">
             {format(currentDate, "MMMM yyyy")}
           </h2>
-          <button
+          <Button
             onClick={handleNext}
-            className="p-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-lg shadow-sm"
+            variant="outline"
+            className="p-1.5"
           >
             <ChevronRight size={18} />
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={() => setViewMode("month")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              viewMode === "month"
-                ? "bg-indigo-500 text-white shadow-sm"
-                : "bg-white border hover:bg-gray-50 text-gray-700"
-            }`}
+            variant={viewMode === "month" ? "primary" : "outline"}
+            size="sm"
           >
             Month
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setViewMode("week")}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              viewMode === "week"
-                ? "bg-indigo-500 text-white shadow-sm"
-                : "bg-white border hover:bg-gray-50 text-gray-700"
-            }`}
+            variant={viewMode === "week" ? "primary" : "outline"}
+            size="sm"
           >
             Week
-          </button>
+          </Button>
         </div>
       </div>
 

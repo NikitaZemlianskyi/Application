@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { api } from "../api/axios";
 import { useAuthStore } from "../store/useAuthStore";
 import { jwtDecode } from "jwt-decode";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
 
 export const Register = () => {
   const [name, setName] = useState("");
@@ -46,49 +48,31 @@ export const Register = () => {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <input
-            type="text"
-            required
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            required
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            required
-            minLength={6}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
-        >
+        <Input
+          label="Full Name"
+          type="text"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          label="Email"
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          label="Password"
+          type="password"
+          required
+          minLength={6}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button type="submit" fullWidth>
           Sign Up
-        </button>
+        </Button>
       </form>
       <p className="mt-4 text-center text-sm text-gray-600">
         Already have an account?{" "}
