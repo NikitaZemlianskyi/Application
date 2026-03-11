@@ -62,6 +62,10 @@ export class EventsService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
+    if (event.organizer.id === userId) {
+      throw new BadRequestException('Organizer cannot join their own event');
+    }
+
     if (event.capacity && event.participants.length >= event.capacity) {
       throw new BadRequestException('Event is full');
     }
@@ -71,16 +75,27 @@ export class EventsService {
       throw new BadRequestException('You are already a participant');
     }
 
-    event.participants.push(user);
-    await this.eventRepository.save(event);
+    await this.eventRepository.manager.query(
+      `INSERT INTO "participants" ("eventId", "userId") VALUES ($1, $2)`,
+      [eventId, userId],
+    );
+
     return { message: 'Successfully joined the event' };
   }
 
   async leave(eventId: string, userId: string) {
     const event = await this.findOne(eventId);
-    
-    event.participants = event.participants.filter(p => p.id !== userId);
-    await this.eventRepository.save(event);
+
+    const isAlreadyParticipant = event.participants.some(p => p.id === userId);
+    if (!isAlreadyParticipant) {
+      throw new BadRequestException('You are not a participant');
+    }
+
+    await this.eventRepository.manager.query(
+      `DELETE FROM "participants" WHERE "eventId" = $1 AND "userId" = $2`,
+      [eventId, userId],
+    );
+
     return { message: 'Successfully left the event' };
   }
 }

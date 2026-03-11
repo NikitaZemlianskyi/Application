@@ -13,7 +13,7 @@ import { User } from '../users/user.entity';
     PassportModule,
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'SUPER_SECRET_KEY',
+      secret: process.env.JWT_SECRET || 'super_secret_key_123',
       signOptions: { expiresIn: '1d' },
     }),
   ],
