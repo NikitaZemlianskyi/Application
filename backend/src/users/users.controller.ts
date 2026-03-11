@@ -1,8 +1,9 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from '../events/event.entity';
+import { CurrentUser } from '../auth/user.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -10,8 +11,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me/events')
-  async getMyEvents(@Request() req) {
-    const userId = req.user.userId;
+  async getMyEvents(@CurrentUser() user: any) {
+    const userId = user.userId;
     return await this.eventRepository.createQueryBuilder('event')
       .leftJoinAndSelect('event.organizer', 'organizer')
       .leftJoinAndSelect('event.participants', 'participant')

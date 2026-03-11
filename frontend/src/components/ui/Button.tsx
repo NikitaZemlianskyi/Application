@@ -1,14 +1,14 @@
 import React from 'react';
 
 export type ButtonVariant = 
-  | 'primary'      // indigo-600
-  | 'primary-light'// indigo-50
-  | 'secondary'    // gray-100
-  | 'danger'       // red-600
-  | 'danger-light' // red-50
-  | 'success'      // green-600
-  | 'outline'      // border border-gray-200
-  | 'ghost';       // text-gray-500
+  | 'primary'      
+  | 'primary-light'
+  | 'secondary'    
+  | 'danger'       
+  | 'danger-light' 
+  | 'success'      
+  | 'outline'      
+  | 'ghost';       
 
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
