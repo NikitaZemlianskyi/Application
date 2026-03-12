@@ -14,7 +14,6 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -23,9 +22,9 @@ import { UsersModule } from './users/users.module';
         type: 'postgres',
         host: configService.get<string>('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 5432),
-        username: configService.get<string>('DB_USER', 'admin'),
-        password: configService.get<string>('DB_PASSWORD', 'secret_pass'),
-        database: configService.get<string>('DB_NAME', 'event_db'),
+        username: configService.get<string>('DB_USER', 'postgres'),
+        password: configService.get<string>('DB_PASSWORD', 'postgres'),
+        database: configService.get<string>('DB_NAME', 'event_mgmt'),
         entities: [User, Event],
         synchronize: true,
       }),
