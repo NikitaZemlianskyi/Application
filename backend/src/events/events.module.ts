@@ -4,9 +4,10 @@ import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 import { Event } from './event.entity';
 import { User } from '../users/user.entity';
+import { Tag } from '../tags/tag.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Event, User])],
+  imports: [TypeOrmModule.forFeature([Event, User, Tag])],
   controllers: [EventsController],
   providers: [EventsService],
   exports: [EventsService], 

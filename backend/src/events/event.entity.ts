@@ -9,6 +9,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Tag } from '../tags/tag.entity';
 
 export enum EventVisibility {
   PUBLIC = 'public',
@@ -44,6 +45,14 @@ export class Event {
 
   @ManyToOne(() => User, (user) => user.organizedEvents, { eager: true })
   organizer: User;
+
+  @ManyToMany(() => Tag)
+  @JoinTable({
+    name: 'event_tags',
+    joinColumn: { name: 'eventId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
+  })
+  tags: Tag[];
 
   @ManyToMany(() => User, (user) => user.participatingEvents)
   @JoinTable({

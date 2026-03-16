@@ -12,6 +12,7 @@ export const createEventSchema = yup.object({
     return String(originalValue).trim() === '' ? null : value;  
   }),
   visibility: yup.mixed<EventVisibility>().oneOf(Object.values(EventVisibility)).default(EventVisibility.PUBLIC),
+  tags: yup.array().of(yup.string().required('Tag cannot be empty')).max(5, 'Maximum 5 tags allowed').optional(),
 });
 
 export const updateEventSchema = createEventSchema.partial(); 
