@@ -10,6 +10,7 @@ import { Tag } from './tags/tag.entity';
 import { SeedService } from './database/seed.service';
 import { EventsModule } from './events/events.module';
 import { UsersModule } from './users/users.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     EventsModule,
     UsersModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],
