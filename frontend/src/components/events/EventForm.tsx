@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { Textarea } from "../ui/Textarea";
+import { TagMultiSelect } from "../ui/TagMultiSelect";
 
 export interface EventFormData {
   title: string;
@@ -12,6 +13,7 @@ export interface EventFormData {
   location: string;
   capacity: string;
   visibility: "public" | "private";
+  tags?: string[];
 }
 
 interface EventFormProps {
@@ -35,6 +37,7 @@ export const EventForm = ({
     location: "",
     capacity: "",
     visibility: "public",
+    tags: [],
   });
 
   useEffect(() => {
@@ -114,6 +117,14 @@ export const EventForm = ({
         onChange={handleChange}
         placeholder="Leave empty for unlimited"
         helperText="Maximum number of participants. Leave empty for unlimited capacity."
+      />
+
+      <TagMultiSelect
+        label="Tags (optional)"
+        tags={formData.tags || []}
+        onChange={(tags) => setFormData({ ...formData, tags })}
+        maxTags={5}
+        helperText="Add up to 5 tags to describe your event (Press Enter or comma to add)"
       />
 
       <div>

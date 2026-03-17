@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { MapPin, Users, CalendarDays, Clock } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { TagChip } from '../ui/TagChip';
 
 interface EventCardProps {
   event: any;
@@ -28,6 +29,17 @@ export const EventCard = ({ event, user, onJoin, onLeave }: EventCardProps) => {
         </div>
         
         <p className="text-gray-500 text-sm mb-6 line-clamp-2">{event.description}</p>
+        
+        {event.tags && event.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-6 mt-auto">
+            {event.tags.slice(0, 3).map((tag: any) => (
+              <TagChip key={tag.id} name={tag.name} />
+            ))}
+            {event.tags.length > 3 && (
+              <span className="text-xs text-gray-500 flex items-center font-medium">+{event.tags.length - 3} more</span>
+            )}
+          </div>
+        )}
         
         <div className="space-y-2.5 text-sm text-gray-500 mb-6 font-medium mt-auto">
           <div className="flex items-center gap-2">

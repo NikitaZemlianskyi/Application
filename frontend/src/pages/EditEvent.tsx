@@ -31,6 +31,7 @@ export const EditEvent = () => {
           location: event.location,
           capacity: event.capacity ? String(event.capacity) : "",
           visibility: event.visibility || "public",
+          tags: event.tags ? event.tags.map((t: any) => t.name) : [],
         });
       } catch (err) {
         setError("Failed to load event details");
@@ -57,6 +58,7 @@ export const EditEvent = () => {
         location: formData.location,
         capacity: formData.capacity ? parseInt(formData.capacity) : null,
         visibility: formData.visibility,
+        tags: formData.tags,
       };
 
       await api.patch(`/events/${id}`, payload);

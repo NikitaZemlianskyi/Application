@@ -18,6 +18,7 @@ import {
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Button } from "../components/ui/Button";
+import { getTagHexColor } from "../components/ui/TagChip";
 
 export const MyEvents = () => {
   const [events, setEvents] = useState<any[]>([]);
@@ -102,15 +103,22 @@ export const MyEvents = () => {
                   {format(day, dateFormat)}
                 </div>
                 <div className="mt-2 flex flex-col gap-1">
-                  {dayEvents.map((event) => (
+                  {dayEvents.map((event) => {
+                    const tagColor = event.tags && event.tags.length > 0
+                      ? getTagHexColor(event.tags[0].name)
+                      : null;
+                      
+                    return (
                     <Link
                       key={event.id}
                       to={`/events/${event.id}`}
                       className="block px-2 py-1 text-xs font-medium bg-indigo-50 text-indigo-500 rounded hover:bg-indigo-100 truncate"
+                      style={tagColor ? { borderLeft: `3px solid ${tagColor}` } : undefined}
                     >
                       {format(parseISO(event.dateTime), "HH:mm")} - {event.title}
                     </Link>
-                  ))}
+                  );
+                  })}
                 </div>
               </div>
             );
@@ -150,16 +158,23 @@ export const MyEvents = () => {
                 {dayEvents.length === 0 ? (
                   <div className="text-xs text-gray-400 mt-2">No events</div>
                 ) : (
-                  dayEvents.map((event) => (
+                  dayEvents.map((event) => {
+                    const tagColor = event.tags && event.tags.length > 0
+                      ? getTagHexColor(event.tags[0].name)
+                      : null;
+
+                    return (
                     <Link
                       key={event.id}
                       to={`/events/${event.id}`}
                       className="block p-2 text-xs font-medium bg-indigo-50 text-indigo-500 rounded hover:bg-indigo-100"
+                      style={tagColor ? { borderLeft: `3px solid ${tagColor}` } : undefined}
                     >
                       <div className="mb-0.5">{format(parseISO(event.dateTime), "HH:mm")}</div>
                       <div className="truncate">{event.title}</div>
                     </Link>
-                  ))
+                  );
+                  })
                 )}
               </div>
             </div>

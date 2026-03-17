@@ -27,6 +27,7 @@ export const CreateEvent = () => {
         location: formData.location,
         capacity: formData.capacity ? parseInt(formData.capacity) : null,
         visibility: formData.visibility,
+        tags: formData.tags,
       };
 
       const response = await api.post("/events", payload);
