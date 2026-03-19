@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards, UsePipes, Query } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { YupValidationPipe } from '../common/pipes/yup-validation.pipe';
@@ -10,8 +10,9 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  async findAll() {
-    return await this.eventsService.findAllPublic();
+  async findAll(@Query('tags') tags?: string) {
+    const tagArray = tags ? tags.split(',').map(t => t.trim()) : undefined;
+    return await this.eventsService.findAllPublic(tagArray);
   }
 
   @Get(':id')

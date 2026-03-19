@@ -14,6 +14,7 @@ This is a Proof of Concept (PoC) for a simplified Event Management Application. 
 * PostgreSQL database 
 * TypeORM
 * JWT Authentication
+* Groq AI
 
 **Infrastructure:**
 * Docker & Docker Compose
@@ -25,6 +26,8 @@ This is a Proof of Concept (PoC) for a simplified Event Management Application. 
 * **Event Participation:** Join or leave events (unless the event is full).
 * **Event Creation & Management:** Authenticated users can create public or private events. Organizers can edit or delete their events.
 * **My Events Calendar:** A calendar view (monthly and weekly) showing events where the user is a participant or organizer.
+* **Tags:** Multi-tag classification on events (up to 5 tags). Tag-based filtering on the Events page. Tags displayed as chips on event cards and details. Optional calendar color-coding by first tag.
+* **AI Assistant:** An AI assistant that can answer questions about events and the user's schedule.
 
 ## 🛠️ Prerequisites
 
@@ -35,7 +38,7 @@ Before you begin, ensure you have the following installed on your machine:
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file in the root directory of the project. You can copy the contents from a `.env.example` file if provided. Below is the list of required environment variables:
+Create a `.env` file in the root directory of the project. You can copy the contents from a `.env.example` file. Below is the list of required environment variables:
 
 | Variable | Description | Example Value |
 | :--- | :--- | :--- |
@@ -45,6 +48,7 @@ Create a `.env` file in the root directory of the project. You can copy the cont
 | `DB_PORT` | Port exposed for the database | `5432` |
 | `JWT_SECRET` | Secret key for signing JWT tokens | `super_secret_jwt_key` |
 | `PORT` | Port for the Backend API | `3000` |
+| `GROQ_API_KEY` | API key for Groq AI | `your_groq_api_key` |
 
 *Note: The Frontend expects the backend API to be available at `http://localhost:${PORT}`.*
 
@@ -71,7 +75,9 @@ Launch the project automatically with one command.
 
 The database is automatically seeded with sample data on the first launch. You can log in with:
 
-| Email | Password
+| Email | Password |
 | :--- | :--- |
 | eduard@test.com | password123 |
 | alice@test.com | password123 |
+| bob@test.com | password123 |
+| carol@test.com | password123 |

@@ -4,15 +4,19 @@ import { Search } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { EventCard } from '../components/events/EventCard';
 import { useEventActions } from '../hooks/useEventActions';
+import { TagMultiSelect } from '../components/ui/TagMultiSelect';
 
 export const Home = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { user } = useAuthStore();
 
   const fetchEvents = async () => {
     try {
-      const response = await api.get('/events');
+      const response = await api.get('/events', { 
+        params: { tags: selectedTags.length > 0 ? selectedTags.join(',') : undefined } 
+      });
       setEvents(response.data);
     } catch (error) {
       console.error('Failed to fetch events', error);
@@ -21,7 +25,7 @@ export const Home = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [selectedTags]);
 
   const { joinEvent, leaveEvent } = useEventActions(fetchEvents);
 
@@ -56,19 +60,36 @@ export const Home = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
+
+        <div className="mt-6 max-w-2xl">
+          <TagMultiSelect
+            tags={selectedTags}
+            onChange={setSelectedTags}
+            label="Filter by Tags"
+            maxTags={10}
+            helperText="Press Enter or comma to add tags to filter."
+          />
+        </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredEvents.map((event) => (
-          <EventCard 
-            key={event.id}
-            event={event} 
-            user={user} 
-            onJoin={handleJoin} 
-            onLeave={handleLeave} 
-          />
-        ))}
-      </div>
+      {filteredEvents.length === 0 ? (
+        <div className="text-center py-16 bg-white rounded-xl border border-gray-100 shadow-sm">
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No events match the selected tags</h3>
+          <p className="text-gray-500">Try removing some filters or adjusting your search.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredEvents.map((event) => (
+            <EventCard 
+              key={event.id}
+              event={event} 
+              user={user} 
+              onJoin={handleJoin} 
+              onLeave={handleLeave} 
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

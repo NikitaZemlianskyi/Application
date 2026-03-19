@@ -29,6 +29,7 @@ services:
       DB_NAME: ${DB_NAME}
       JWT_SECRET: ${JWT_SECRET}
       PORT: ${PORT}
+      GROQ_API_KEY: ${GROQ_API_KEY}
     ports:
       - "${PORT}:${PORT}"
     depends_on:

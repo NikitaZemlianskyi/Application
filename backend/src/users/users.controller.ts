@@ -16,6 +16,7 @@ export class UsersController {
     return await this.eventRepository.createQueryBuilder('event')
       .leftJoinAndSelect('event.organizer', 'organizer')
       .leftJoinAndSelect('event.participants', 'participant')
+      .leftJoinAndSelect('event.tags', 'tags')
       .where('organizer.id = :userId', { userId })
       .orWhere('participant.id = :userId', { userId })
       .getMany();

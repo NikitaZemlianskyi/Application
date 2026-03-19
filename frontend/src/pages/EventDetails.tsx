@@ -7,6 +7,7 @@ import { MapPin, Users, CalendarDays, Trash2, Edit } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { ConfirmModal } from "../components/ui/ConfirmModal";
 import { useEventActions } from "../hooks/useEventActions";
+import { TagChip } from "../components/ui/TagChip";
 
 export const EventDetails = () => {
   const { id } = useParams();
@@ -79,6 +80,14 @@ export const EventDetails = () => {
           <p className="text-gray-600 whitespace-pre-wrap text-lg mb-8">
             {event.description}
           </p>
+
+          {event.tags && event.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+              {event.tags.map((tag: any) => (
+                <TagChip key={tag.id} name={tag.name} size="md" />
+              ))}
+            </div>
+          )}
 
           <div className="space-y-4 text-gray-700">
             <div className="flex items-center gap-3">
