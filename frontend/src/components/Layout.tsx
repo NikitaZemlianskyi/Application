@@ -1,6 +1,7 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { LogOut, Calendar, Plus, User, LayoutList } from 'lucide-react';
+import { AiAssistant } from './ui/AiAssistant';
 
 export const Layout = () => {
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -54,6 +55,8 @@ export const Layout = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <Outlet />
       </main>
+      
+      {isAuthenticated && <AiAssistant />}
     </div>
   );
 };

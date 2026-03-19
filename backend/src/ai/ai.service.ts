@@ -20,7 +20,7 @@ export class AiService {
     this.groq = new Groq({ apiKey });
   }
 
-  async askQuestion(question: string, userId: string): Promise<string> {
+  async askQuestion(question: string, userId: string, history: { role: string; content: string }[] = []): Promise<string> {
     try {
       // 1. Collect Context (RAG)
       // Fetch upcoming user events (user is a participant)
@@ -34,6 +34,10 @@ export class AiService {
       const userUpcomingEvents = allEvents.filter(
         e => e.participants.some(p => p.id === userId) && e.dateTime > now
       );
+
+      const userPastEvents = allEvents.filter(
+        e => e.participants.some(p => p.id === userId) && e.dateTime <= now
+      );
       
       const userCreatedEvents = allEvents.filter(
         e => e.organizer && e.organizer.id === userId
@@ -46,6 +50,7 @@ export class AiService {
       // Create a compact snapshot to avoid token limits
       const snapshot = {
         myUpcomingEvents: userUpcomingEvents.map(this.mapCompactEvent),
+        myPastEvents: userPastEvents.map(this.mapCompactEvent),
         myOrganizedEvents: userCreatedEvents.map(this.mapCompactEvent),
         publicEvents: publicUpcomingEvents.map(this.mapCompactEvent),
       };
@@ -58,13 +63,18 @@ ${JSON.stringify(snapshot)}
 Answer the user's question briefly and concisely based ONLY on the provided events data.
 If the question isn't about events or you cannot answer it using the data, answer simply with the exact phrase: "Sorry, I didn't understand that. Please try rephrasing your question."`;
 
-      // 3. Send request to Groq
+      // 3. Build message list with conversation history
+      const priorMessages = history
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+
       const completion = await this.groq.chat.completions.create({
         messages: [
           { role: 'system', content: systemPrompt },
+          ...priorMessages,
           { role: 'user', content: question },
         ],
-        model: 'llama3-8b-8192',
+        model: 'llama-3.1-8b-instant',
         temperature: 0,
       });
 
@@ -85,7 +95,7 @@ If the question isn't about events or you cannot answer it using the data, answe
       organizerId: event.organizer?.id,
       tags: event.tags?.map(t => t.name) || [],
       participantCount: event.participants?.length || 0,
-      participantsIds: event.participants?.map(p => p.id) || [],
+      participantNames: event.participants?.map(p => (p as any).name) || [],
     };
   }
 }

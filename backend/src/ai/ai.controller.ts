@@ -11,12 +11,13 @@ export class AiController {
   @Post('ask')
   async askQuestion(
     @Body('question') question: string,
-    @Req() req: Request & { user: { id: string } }
+    @Body('history') history: { role: string; content: string }[],
+    @Req() req: Request & { user: { userId: string } }
   ) {
     if (!question) {
       return { answer: 'Sorry, I didn\'t understand that. Please try rephrasing your question.' };
     }
-    const answer = await this.aiService.askQuestion(question, req.user.id);
+    const answer = await this.aiService.askQuestion(question, req.user.userId, history || []);
     return { answer };
   }
 }
